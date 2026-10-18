@@ -1,0 +1,570 @@
+/* ==========================================================================
+   components.css
+   Reusable pieces: buttons, chips, form fields, the year slider, tickets,
+   cards, segmented control, notices, tables, tooltip.
+   ========================================================================== */
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55em;
+  min-height: 48px;
+  padding: 0.75em 1.4em;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background: var(--green);
+  color: var(--cream);
+  box-shadow: 0 6px 16px -8px rgb(31 77 58 / 0.8);
+}
+
+.btn--primary:hover {
+  background: var(--green-dark);
+}
+
+.btn--primary .icon {
+  transition: transform 0.2s ease;
+}
+
+.btn--primary:hover .icon {
+  transform: translateX(3px);
+}
+
+.btn--ghost {
+  border-color: var(--maroon);
+  background: transparent;
+  color: var(--maroon);
+}
+
+.btn--ghost:hover {
+  background: var(--maroon);
+  color: var(--cream);
+}
+
+.btn--secondary {
+  border-color: var(--green);
+  background: var(--paper);
+  color: var(--green);
+}
+
+.btn--secondary:hover {
+  background: var(--green);
+  color: var(--cream);
+}
+
+.btn--text {
+  min-height: 44px;
+  padding-inline: 0.5em;
+  background: transparent;
+  color: var(--green);
+  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+}
+
+.btn--text:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Chips (quick amounts, styled like small notes) ---------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  min-height: 40px;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-sm);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 6px, rgb(31 77 58 / 0.05) 6px 7px),
+    var(--paper);
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.chip:hover {
+  border-color: var(--green);
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--green);
+  background: var(--green);
+  color: var(--cream);
+}
+
+/* ---------- Fields ---------- */
+.field + .field {
+  margin-top: 1.5rem;
+}
+
+.field__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.field__hint {
+  margin: 0.4rem 0 0.75rem;
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+.field__error {
+  margin: 0.4rem 0 0.75rem;
+  font-size: var(--step--1);
+  font-weight: 700;
+  color: var(--maroon);
+}
+
+.amount-input {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  padding: 0.2rem 0.9rem;
+  border: 2px solid var(--control-border);
+  border-radius: var(--radius);
+  background: #fffdf8;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.amount-input:focus-within {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgb(31 77 58 / 0.18);
+}
+
+.amount-input[data-invalid] {
+  border-color: var(--maroon);
+}
+
+.amount-input__symbol {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--maroon);
+}
+
+.amount-input input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.35rem 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.4rem);
+  font-weight: 700;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--ink);
+}
+
+/* The wrapper shows the focus ring, so the input itself doesn't need one */
+.amount-input input:focus-visible {
+  outline: none;
+}
+
+.year-readout {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--maroon);
+}
+
+/* ---------- Year slider: a native range input styled as a timeline ---------- */
+.year-slider {
+  --thumb: 30px;
+  --fill: 0%;
+  position: relative;
+  padding-bottom: 2.2rem;
+  margin-top: 0.4rem;
+}
+
+.year-slider__input {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: var(--thumb);
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.year-slider__input::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--maroon) var(--fill), var(--line-strong) var(--fill));
+}
+
+.year-slider__input::-moz-range-track {
+  height: 4px;
+  border-radius: 4px;
+  background: var(--line-strong);
+}
+
+.year-slider__input::-moz-range-progress {
+  height: 4px;
+  border-radius: 4px;
+  background: var(--maroon);
+}
+
+.year-slider__input::-webkit-slider-thumb {
+  width: var(--thumb);
+  height: var(--thumb);
+  margin-top: calc((4px - var(--thumb)) / 2);
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #a33a48, var(--maroon) 60%);
+  box-shadow: 0 0 0 2px var(--maroon), 0 4px 10px rgb(0 0 0 / 0.25);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: transform 0.15s ease;
+}
+
+.year-slider__input::-moz-range-thumb {
+  width: calc(var(--thumb) - 6px);
+  height: calc(var(--thumb) - 6px);
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+  background: var(--maroon);
+  box-shadow: 0 0 0 2px var(--maroon), 0 4px 10px rgb(0 0 0 / 0.25);
+}
+
+.year-slider__input:active::-webkit-slider-thumb {
+  transform: scale(1.1);
+}
+
+.year-slider__input:focus-visible {
+  outline-offset: 6px;
+}
+
+/* Tick marks line up exactly with the thumb's possible centre points */
+.year-slider__ticks {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.year-slider__tick {
+  position: absolute;
+  top: calc(var(--thumb) / 2 - 5px);
+  left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--pos));
+  display: grid;
+  justify-items: center;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.year-slider__tick::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--cream);
+  border-radius: 50%;
+  background: var(--line-strong);
+  box-shadow: 0 0 0 1px var(--line-strong);
+}
+
+.year-slider__tick.is-past::before {
+  background: var(--maroon);
+  box-shadow: 0 0 0 1px var(--maroon);
+}
+
+.year-slider__label {
+  margin-top: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.year-slider__tick.is-active .year-slider__label {
+  color: var(--maroon);
+  font-weight: 700;
+}
+
+/* ---------- Ticket shell (the time machine and journey stops) ---------- */
+.ticket {
+  position: relative;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 27px, rgb(31 77 58 / 0.04) 27px 28px),
+    var(--paper);
+  box-shadow: var(--shadow-card);
+}
+
+.ticket__strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 10px, rgb(255 255 255 / 0.04) 10px 11px),
+    var(--green);
+  color: var(--cream);
+}
+
+.ticket__issuer {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+
+.ticket__serial {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--gold-bright);
+}
+
+/* Perforated tear line with half-circle notches cut into both edges */
+.ticket__perforation {
+  position: relative;
+  height: 0;
+  margin-inline: 1.4rem;
+  border-top: 2px dashed var(--line-strong);
+}
+
+.ticket__perforation::before,
+.ticket__perforation::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--cream);
+}
+
+.ticket__perforation::before {
+  left: calc(-1.4rem - 12px);
+  clip-path: inset(0 0 0 50%);
+}
+
+.ticket__perforation::after {
+  right: calc(-1.4rem - 12px);
+  clip-path: inset(0 50% 0 0);
+}
+
+/* ---------- Segmented control (radio group) ---------- */
+.segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.segmented legend {
+  float: left;
+  margin-right: 0.75rem;
+  padding: 0;
+}
+
+.segmented__option {
+  position: relative;
+}
+
+.segmented__option input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.segmented__option label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.35rem 1rem 0.35rem 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.segmented__option .icon {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.segmented__option input:focus-visible + label {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ---------- Notices & badges ---------- */
+.sample-badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.6rem 0.9rem;
+  border: 1px dashed var(--gold);
+  border-radius: var(--radius-sm);
+  background: rgb(201 151 47 / 0.08);
+  font-size: var(--step--1);
+  color: var(--ink);
+}
+
+.notice {
+  display: flex;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  border-left: 4px solid var(--maroon);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: #f7e7e3;
+}
+
+.notice .icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  color: var(--maroon);
+}
+
+.notice p:last-child {
+  margin: 0;
+}
+
+/* ---------- Details / disclosure ---------- */
+details > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--green);
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+details > summary::before {
+  content: "+";
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+details[open] > summary::before {
+  content: "–";
+}
+
+/* ---------- Tables ---------- */
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+caption {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  font-weight: 700;
+}
+
+th,
+td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+
+th:first-child,
+td:first-child {
+  text-align: left;
+}
+
+thead th {
+  background: var(--green);
+  color: var(--cream);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+tbody tr:nth-child(even) {
+  background: rgb(239 230 210 / 0.55);
+}
+
+tbody th {
+  font-family: var(--font-mono);
+}
+
+td {
+  font-family: var(--font-mono);
+}
+
+tbody tr.is-selected {
+  background: #f3e1dd;
+  box-shadow: inset 4px 0 0 var(--maroon);
+}
+
+/* ---------- Stamp animation (reused by cards) ---------- */
+@keyframes stamp-in {
+  0%   { opacity: 0; transform: scale(1.06) rotate(-1.5deg); }
+  60%  { opacity: 1; transform: scale(0.99) rotate(0.3deg); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.4); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(0.4em); }
+  to   { opacity: 1; transform: none; }
+}

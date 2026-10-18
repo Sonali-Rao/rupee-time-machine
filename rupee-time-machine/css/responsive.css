@@ -1,0 +1,169 @@
+/* ==========================================================================
+   responsive.css
+   Breakpoints: ≤ 1000px tablet · ≤ 720px large phone · ≤ 420px small phone
+   Plus user-preference queries (reduced motion, forced colours).
+   ========================================================================== */
+
+@media (max-width: 1000px) {
+  .hero__inner,
+  .why__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero__lead {
+    max-width: 44ch;
+  }
+
+  .result-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .extras__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .site-nav {
+    gap: 0 1rem;
+  }
+
+  .site-nav a {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* Result cards stack */
+  .result-cards,
+  .results__meta,
+  .extras__grid,
+  .data__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .result-card__art {
+    height: 7.5rem;
+  }
+
+  .result-card__art .icon {
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+
+  /* Then / today stack, "vs" sits between them */
+  .compare__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .compare__vs {
+    justify-self: center;
+  }
+
+  .icon-grid {
+    grid-template-columns: repeat(auto-fill, minmax(1.75rem, 1fr));
+  }
+
+  .machine__body,
+  .machine__actions {
+    padding-inline: 1.1rem;
+  }
+
+  .ticket__perforation {
+    margin-inline: 1.1rem;
+  }
+
+  .ticket__perforation::before { left: calc(-1.1rem - 12px); }
+  .ticket__perforation::after  { right: calc(-1.1rem - 12px); }
+
+  .machine__actions .btn {
+    flex: 1 1 100%;
+  }
+
+  .ticket__strip {
+    padding-inline: 1.1rem;
+  }
+
+  .section-head .btn {
+    width: 100%;
+  }
+
+  .chart__tooltip {
+    min-width: 11rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 420px) {
+  /* Only every other year label fits; the selected year always shows */
+  .year-slider__tick:nth-child(even) .year-slider__label {
+    visibility: hidden;
+  }
+
+  .year-slider__tick.is-active .year-slider__label {
+    visibility: visible;
+  }
+
+  .ticket__serial {
+    display: none;
+  }
+
+  .why-row {
+    grid-template-columns: 3rem 4.2rem 1.1rem minmax(0, 1fr);
+    gap: 0.4rem;
+  }
+
+  .mini-note {
+    width: 4.2rem;
+    height: 2.1rem;
+    padding-left: 0.3rem;
+  }
+
+  .mini-note__value {
+    font-size: 0.72rem;
+  }
+
+  .why-row__goods .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .partial-icon {
+    width: calc(1.5rem * var(--fraction));
+  }
+
+  .journey-stop {
+    width: 12rem;
+  }
+}
+
+/* ---------- User preferences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .time-wash {
+    display: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .chip[aria-pressed="true"],
+  .segmented__option input:checked + label {
+    outline: 3px solid Highlight;
+  }
+
+  .journey-stop[aria-current="true"] {
+    outline: 3px solid Highlight;
+  }
+
+  .chart__point::before {
+    border-color: CanvasText;
+  }
+}

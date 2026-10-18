@@ -1,0 +1,16 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors (keep the shared extension recommendation)
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+
+# Tooling, if you add any later
+node_modules/
+npm-debug.log*
+dist/
+build/

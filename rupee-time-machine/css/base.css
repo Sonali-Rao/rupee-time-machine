@@ -1,0 +1,255 @@
+/* ==========================================================================
+   base.css
+   Design tokens, reset, typography, textures and accessibility utilities.
+   Colour pairs used for text are all checked for WCAG AA (≥ 4.5:1).
+   ========================================================================== */
+
+:root {
+  /* ---- Palette ---- */
+  --cream: #f5efe0;          /* page background */
+  --paper: #fbf7ee;          /* cards */
+  --paper-deep: #efe6d2;     /* recessed areas, table stripes */
+  --ink: #22201c;            /* body text: 15.6:1 on cream */
+  --ink-muted: #5b554b;      /* secondary text: 6.5:1 on cream */
+  --green: #1f4d3a;          /* primary: 8.4:1 on cream */
+  --green-dark: #163a2b;
+  --green-soft: #dfe8d7;
+  --maroon: #7a2330;         /* secondary: 8.6:1 on cream */
+  --maroon-dark: #5e1a25;
+  --gold: #c9972f;           /* decorative lines only (not for text on cream) */
+  --gold-text: #7a5612;      /* gold for text on light: 5.8:1 */
+  --gold-bright: #e8bd4f;    /* gold for text on green: 5.4:1 */
+  --line: rgb(34 32 28 / 0.18);
+  --line-strong: rgb(34 32 28 / 0.35);
+  --control-border: #857d6f;  /* form-control edges: 3.6:1 on cream (WCAG 1.4.11) */
+  --focus: #1f4d3a;
+  --focus-on-dark: #e8bd4f;
+
+  /* ---- Type ---- */
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Noto Serif", serif;
+  --font-body: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.875rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.4vw, 1.4rem);
+  --step-2: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+  --step-3: clamp(2rem, 1.6rem + 1.8vw, 3rem);
+  --step-4: clamp(2.5rem, 1.8rem + 3.5vw, 5rem);
+
+  /* ---- Space & shape ---- */
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --container: 72rem;
+  --section-space: clamp(4rem, 9vw, 7rem);
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --shadow-card: 0 1px 0 rgb(255 255 255 / 0.6) inset, 0 10px 30px -18px rgb(34 32 28 / 0.35);
+
+  /* Subtle paper grain: an SVG noise filter, used as a background layer */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.13 0 0 0 0 0.12 0 0 0 0 0.1 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  color-scheme: light;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 1.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--grain), var(--cream);
+}
+
+h1, h2, h3 {
+  margin: 0 0 0.5em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+h2 {
+  font-size: var(--step-3);
+}
+
+h3 {
+  font-size: var(--step-1);
+}
+
+p, ul, ol, dl, figure, table {
+  margin: 0 0 1em;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--green);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+code {
+  padding: 0.05em 0.35em;
+  border-radius: 4px;
+  background: var(--paper-deep);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+::selection {
+  background: var(--green);
+  color: var(--cream);
+}
+
+/* ---------- Focus ---------- */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+main:focus,
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* ---------- Utilities ---------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  z-index: 100;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--green);
+  color: var(--cream);
+  font-weight: 700;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+  outline-color: var(--gold);
+}
+
+.container {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+
+.sprite {
+  display: none;
+}
+
+.icon {
+  flex: none;
+  width: 1.15em;
+  height: 1.15em;
+}
+
+.icon--inline {
+  display: inline-block;
+  vertical-align: -0.2em;
+  margin-right: 0.3em;
+}
+
+/* Tiny uppercase "ISSUED / YEAR / VALUE" labels */
+.micro-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--maroon);
+}
+
+/* A short gold rule before every eyebrow */
+.eyebrow::before {
+  content: "";
+  width: 2rem;
+  height: 2px;
+  background: var(--gold);
+}
+
+.eyebrow--center {
+  display: flex;
+  justify-content: center;
+}
+
+.noscript {
+  position: fixed;
+  inset: auto 1rem 1rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: var(--maroon);
+  color: #fff;
+  text-align: center;
+}

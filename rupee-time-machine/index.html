@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rupee Time Machine · What did ₹500 used to buy?</title>
+  <meta name="description" content="An interactive exhibit that makes Indian inflation tangible: see what your rupees could have bought in 1990, 2000, 2010 and today.">
+  <meta name="theme-color" content="#1f4d3a">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/sections.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- Order matters: data → helpers → maths → UI components → app -->
+  <script src="js/data.js" defer></script>
+  <script src="js/utils.js" defer></script>
+  <script src="js/calculator.js" defer></script>
+  <script src="js/components/year-slider.js" defer></script>
+  <script src="js/components/results.js" defer></script>
+  <script src="js/components/compare.js" defer></script>
+  <script src="js/components/journey.js" defer></script>
+  <script src="js/components/extras.js" defer></script>
+  <script src="js/components/explainer.js" defer></script>
+  <script src="js/components/chart.js" defer></script>
+  <script src="js/components/data-table.js" defer></script>
+  <script src="js/components/share.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <!-- ============ SVG ILLUSTRATIONS (inline so they work from file://) ============ -->
+  <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <!-- Dosa on a plate with chutney and sambar -->
+    <symbol id="i-dosa" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="43" rx="29" ry="12" fill="#e7dcc6" stroke="#2b2824" stroke-width="1.5"/>
+      <ellipse cx="32" cy="42" rx="22" ry="8" fill="#f8f3e8"/>
+      <path d="M7 39 50 24.5c5 .5 8 4.5 6 9.5L14 45.5c-5 0-9-2.5-7-6.5Z" fill="#d89b3a" stroke="#8a5313" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M17 39.5l3.5 3M25 37l3.5 3M33 34.5l3.5 3M41 32l3.5 3" stroke="#a8691c" stroke-width="1.6" stroke-linecap="round"/>
+      <ellipse cx="53" cy="29.5" rx="3.8" ry="5.2" fill="#f0c779" stroke="#8a5313" stroke-width="1.5"/>
+      <ellipse cx="47" cy="48.5" rx="6" ry="3" fill="#f8f3e8" stroke="#2b2824" stroke-width="1.2"/>
+      <ellipse cx="47" cy="48" rx="4" ry="1.6" fill="#dfe9c9"/>
+      <ellipse cx="19" cy="50" rx="6" ry="3" fill="#f8f3e8" stroke="#2b2824" stroke-width="1.2"/>
+      <ellipse cx="19" cy="49.5" rx="4" ry="1.6" fill="#b5532a"/>
+    </symbol>
+
+    <!-- Petrol pump -->
+    <symbol id="i-petrol" viewBox="0 0 64 64">
+      <rect x="11" y="9" width="28" height="46" rx="4" fill="#1f4d3a" stroke="#2b2824" stroke-width="1.5"/>
+      <rect x="16" y="15" width="18" height="12" rx="2" fill="#f8f3e8"/>
+      <path d="M19 19.5h12M19 23h7" stroke="#1f4d3a" stroke-width="1.6" stroke-linecap="round"/>
+      <rect x="11" y="44" width="28" height="4" fill="#7a2330"/>
+      <path d="M25 31.5c-3 4-4.8 6.5-4.8 8.5a4.8 4.8 0 0 0 9.6 0c0-2-1.8-4.5-4.8-8.5Z" fill="#e8bd4f"/>
+      <path d="M39 21h6a5 5 0 0 1 5 5v19a4 4 0 0 0 8 0V23l-4-6" fill="none" stroke="#2b2824" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="7" y="55" width="36" height="5" rx="1.5" fill="#2b2824"/>
+    </symbol>
+
+    <!-- Gold bars -->
+    <symbol id="i-gold" viewBox="0 0 64 64">
+      <path d="m4 51 8-13h17l6 13Z" fill="#d9a936" stroke="#7a5612" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="m29 51 8-13h17l6 13Z" fill="#d9a936" stroke="#7a5612" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="m17 38 7-12h17l6 12Z" fill="#ebc158" stroke="#7a5612" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M15 42h10M40 42h10M27 30h10" stroke="#fff4c7" stroke-width="2" stroke-linecap="round"/>
+      <rect x="2" y="51" width="60" height="4" rx="1" fill="#7a5612"/>
+      <path d="m52 10 1.6 4.2 4.2 1.6-4.2 1.6L52 21.6l-1.6-4.2-4.2-1.6 4.2-1.6Z" fill="#c9972f"/>
+      <path d="m12 14 1 2.6 2.6 1-2.6 1-1 2.6-1-2.6-2.6-1 2.6-1Z" fill="#c9972f"/>
+    </symbol>
+
+    <!-- Cinema ticket -->
+    <symbol id="i-cinema" viewBox="0 0 64 64">
+      <path d="M6 17h52v11a4 4 0 0 0 0 8v11H6V36a4 4 0 0 0 0-8Z" fill="#7a2330" stroke="#2b2824" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M19 20v24" stroke="#f8f3e8" stroke-width="1.6" stroke-dasharray="3 3"/>
+      <path d="m38 23 2.4 5 5.5.7-4 3.7 1 5.4-4.9-2.7-4.9 2.7 1-5.4-4-3.7 5.5-.7Z" fill="#ebc158"/>
+      <path d="M10 25h5M10 30h5M10 35h5M10 40h5" stroke="#f8f3e8" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>
+    </symbol>
+
+    <!-- City bus -->
+    <symbol id="i-bus" viewBox="0 0 64 64">
+      <rect x="5" y="15" width="54" height="31" rx="5" fill="#7a2330" stroke="#2b2824" stroke-width="1.5"/>
+      <rect x="10" y="20" width="9" height="10" rx="1" fill="#f8f3e8"/>
+      <rect x="22" y="20" width="9" height="10" rx="1" fill="#f8f3e8"/>
+      <rect x="34" y="20" width="9" height="10" rx="1" fill="#f8f3e8"/>
+      <rect x="47" y="20" width="7" height="20" rx="1" fill="#f8f3e8"/>
+      <rect x="5" y="34" width="41" height="3" fill="#ebc158"/>
+      <circle cx="17" cy="47" r="5.5" fill="#2b2824"/><circle cx="17" cy="47" r="2" fill="#e7dcc6"/>
+      <circle cx="46" cy="47" r="5.5" fill="#2b2824"/><circle cx="46" cy="47" r="2" fill="#e7dcc6"/>
+      <path d="M2 55h60" stroke="#2b2824" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- South Indian filter coffee: tumbler and dabarah -->
+    <symbol id="i-coffee" viewBox="0 0 64 64">
+      <path d="M28 11c-2-2 2-4 0-6M36 11c-2-2 2-4 0-6" stroke="#7a5612" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <path d="M11 45h42l-4 11H15Z" fill="#b9b3a6" stroke="#2b2824" stroke-width="1.5" stroke-linejoin="round"/>
+      <rect x="8" y="42" width="48" height="4" rx="2" fill="#dcd6c9" stroke="#2b2824" stroke-width="1.2"/>
+      <path d="M20 16h24l-3 26H23Z" fill="#dcd6c9" stroke="#2b2824" stroke-width="1.5" stroke-linejoin="round"/>
+      <ellipse cx="32" cy="16" rx="12" ry="3" fill="#c79b6d" stroke="#2b2824" stroke-width="1.2"/>
+      <path d="m25.5 20 2 18" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+    </symbol>
+
+    <!-- Rice sack -->
+    <symbol id="i-rice" viewBox="0 0 64 64">
+      <path d="M18 17c4 3 24 3 28 0l2 6c6 8 8 20 4 30-2 4-6 5-20 5s-18-1-20-5c-4-10-2-22 4-30Z" fill="#eadfc4" stroke="#2b2824" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M19.5 22c6 2.2 19 2.2 25 0" stroke="#7a2330" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <rect x="22" y="33" width="20" height="13" rx="2" fill="#1f4d3a"/>
+      <path d="M26 37.5h12M26 41.5h8" stroke="#f8f3e8" stroke-width="1.5" stroke-linecap="round"/>
+      <ellipse cx="26" cy="13" rx="2.2" ry="1.2" fill="#fffdf6" stroke="#b9b3a6" stroke-width=".6"/>
+      <ellipse cx="32" cy="11.5" rx="2.2" ry="1.2" fill="#fffdf6" stroke="#b9b3a6" stroke-width=".6"/>
+      <ellipse cx="38" cy="13" rx="2.2" ry="1.2" fill="#fffdf6" stroke="#b9b3a6" stroke-width=".6"/>
+    </symbol>
+
+    <!-- LPG cylinder -->
+    <symbol id="i-lpg" viewBox="0 0 64 64">
+      <rect x="29" y="5" width="6" height="6" rx="1" fill="#2b2824"/>
+      <path d="M24 19v-7h16v7" fill="none" stroke="#2b2824" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="18" y="17" width="28" height="39" rx="12" fill="#b3261e" stroke="#2b2824" stroke-width="1.5"/>
+      <rect x="18" y="35" width="28" height="4" fill="#7a2330"/>
+      <path d="M23.5 25v21" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".45"/>
+      <rect x="20" y="55" width="24" height="4" rx="1" fill="#2b2824"/>
+    </symbol>
+
+    <!-- Mobile phone with signal -->
+    <symbol id="i-data" viewBox="0 0 64 64">
+      <rect x="18" y="5" width="28" height="54" rx="5" fill="#2b2824"/>
+      <rect x="21" y="11" width="22" height="40" rx="2" fill="#f8f3e8"/>
+      <path d="M25.5 25.5a9 9 0 0 1 13 0M28.5 29a4.5 4.5 0 0 1 7 0" stroke="#1f4d3a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <circle cx="32" cy="32.5" r="1.8" fill="#1f4d3a"/>
+      <rect x="25" y="42" width="3" height="4" fill="#1f4d3a"/>
+      <rect x="30" y="39" width="3" height="7" fill="#1f4d3a"/>
+      <rect x="35" y="36" width="3" height="10" fill="#1f4d3a"/>
+      <circle cx="32" cy="55" r="1.6" fill="#8f877a"/>
+    </symbol>
+
+
+    <!-- UI icons (inherit text colour) -->
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path fill="currentColor" d="M18 16.1c-.8 0-1.4.3-2 .8l-7.1-4.2c.1-.2.1-.5.1-.7s0-.5-.1-.7L16 7.2A3 3 0 1 0 15 5c0 .2 0 .5.1.7L8 9.8A3 3 0 1 0 8 14.2l7.2 4.2-.1.6a2.9 2.9 0 1 0 2.9-2.9Z"/></symbol>
+    <symbol id="i-dice" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.6" fill="currentColor"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5h4v14H7Zm6 0h4v14h-4Z" fill="currentColor"/></symbol>
+    <symbol id="i-replay" viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7Z" fill="currentColor"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 10.5v6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="7.3" r="1.3" fill="currentColor"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ================================ HEADER ================================ -->
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="#top" aria-label="Rupee Time Machine, back to top">
+        <span class="brand__mark" aria-hidden="true">₹</span>
+        <span class="brand__text">Rupee Time Machine</span>
+      </a>
+      <nav aria-label="Sections">
+        <ul class="site-nav">
+          <li><a href="#results">Result</a></li>
+          <li><a href="#journey">Timeline</a></li>
+          <li><a href="#chart">Chart</a></li>
+          <li><a href="#data">About the data</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <!-- ================================ HERO ================================ -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="container hero__inner">
+        <div class="hero__intro">
+          <p class="eyebrow">An interactive exhibit on Indian money</p>
+          <h1 class="hero__title" id="hero-title">
+            What did <span class="hero__amount" data-amount-text>₹500</span> used to buy?
+          </h1>
+          <p class="hero__lead">Travel through time and see how the purchasing power of the Indian rupee changed.</p>
+          <p class="hero__note">
+            <svg class="icon icon--inline" aria-hidden="true" focusable="false"><use href="#i-info"/></svg>
+            An educational illustration, not a financial calculator. Prices are approximate sample data.
+          </p>
+        </div>
+
+        <!-- The time machine: styled as a railway ticket -->
+        <form class="machine ticket" id="machine" novalidate aria-labelledby="machine-title">
+          <div class="ticket__strip">
+            <h2 class="ticket__issuer" id="machine-title">Time machine</h2>
+            <p class="ticket__serial" aria-hidden="true" data-serial>No. RTM·1995·000500</p>
+          </div>
+
+          <div class="machine__body">
+            <div class="machine__route" aria-hidden="true">
+              <div class="route__stop">
+                <span class="micro-label">From</span>
+                <span class="route__year" data-latest-year>2026</span>
+              </div>
+              <span class="route__line"></span>
+              <div class="route__stop route__stop--to">
+                <span class="micro-label">To</span>
+                <span class="route__year route__year--to" data-year-flip>1995</span>
+              </div>
+            </div>
+
+            <div class="field field--amount">
+              <label class="micro-label" for="amount">Amount in rupees</label>
+              <div class="amount-input">
+                <span class="amount-input__symbol" aria-hidden="true">₹</span>
+                <input id="amount" name="amount" type="text" inputmode="numeric" autocomplete="off"
+                       spellcheck="false" value="500" aria-describedby="amount-hint amount-error">
+              </div>
+              <p class="field__hint" id="amount-hint">Whole rupees, from ₹1 to ₹10,00,00,000.</p>
+              <p class="field__error" id="amount-error" hidden></p>
+              <div class="chips" role="group" aria-label="Quick amounts" data-amount-chips>
+                <button type="button" class="chip" data-amount="100" aria-pressed="false">₹100</button>
+                <button type="button" class="chip" data-amount="500" aria-pressed="true">₹500</button>
+                <button type="button" class="chip" data-amount="1000" aria-pressed="false">₹1,000</button>
+                <button type="button" class="chip" data-amount="2000" aria-pressed="false">₹2,000</button>
+              </div>
+            </div>
+
+            <div class="field field--year">
+              <div class="field__row">
+                <label class="micro-label" for="year">Travel to year</label>
+                <span class="year-readout" aria-hidden="true" data-year-text>1995</span>
+              </div>
+              <!-- Native range input: draggable, keyboard-operable, announced by screen readers.
+                   Its ticks are generated from data.js. -->
+              <div class="year-slider" data-year-slider>
+                <input id="year" name="year" type="range" min="0" max="7" step="1" value="1"
+                       class="year-slider__input" aria-describedby="year-hint">
+                <ol class="year-slider__ticks" aria-hidden="true" data-year-ticks></ol>
+              </div>
+              <p class="field__hint" id="year-hint">Use the arrow keys or drag to choose a year.</p>
+            </div>
+          </div>
+
+          <div class="ticket__perforation" aria-hidden="true"></div>
+
+          <div class="machine__actions">
+            <button type="submit" class="btn btn--primary">
+              Take me back
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
+            </button>
+            <button type="button" class="btn btn--ghost" data-surprise>
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-dice"/></svg>
+              Surprise me
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Screen-reader summary of every recalculation -->
+    <p class="visually-hidden" role="status" aria-live="polite" data-announcer></p>
+
+    <!-- ================================ RESULT ================================ -->
+    <section class="section results" id="results" aria-labelledby="results-title">
+      <div class="container">
+        <p class="eyebrow eyebrow--center">Destination reached</p>
+        <h2 class="results__title" id="results-title" tabindex="-1">
+          Your <span class="results__amount" data-amount-text>₹500</span> in <span class="results__year" data-year-text>1995</span>
+        </h2>
+        <p class="results__lead">Based on approximate prices from around that year, the same note could have bought:</p>
+
+        <div class="result-cards" data-result-cards></div>
+
+        <div class="results__meta">
+          <p class="sample-badge">
+            <svg class="icon icon--inline" aria-hidden="true" focusable="false"><use href="#i-info"/></svg>
+            <span>Approximate historical prices · <strong>Sample data</strong>, not verified. <a href="#data">See where these numbers come from</a>.</span>
+          </p>
+
+          <details class="how-it-works">
+            <summary>How this is calculated</summary>
+            <div class="how-it-works__body">
+              <p><strong>Quantity = amount ÷ price.</strong> If a dosa cost about ₹6, then ₹500 ÷ ₹6 ≈ 83 dosas. Countable things (dosas, tickets) are rounded down to whole items.</p>
+              <p><strong>Gold is priced per 10 grams,</strong> so grams = amount ÷ price per 10 g × 10.</p>
+              <p><strong>“Worth in today’s money”</strong> (the chart below) = amount × price index today ÷ price index then. It uses a simple consumer-price index stored with the rest of the data.</p>
+              <p>Every price comes from one editable file, <code>js/data.js</code>. The numbers are rounded approximations meant to illustrate the idea, not official statistics.</p>
+            </div>
+          </details>
+
+          <div class="share">
+            <button type="button" class="btn btn--secondary" data-share>
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-share"/></svg>
+              Share my result
+            </button>
+            <p class="share__status" role="status" data-share-status></p>
+            <div class="share__fallback" data-share-fallback hidden>
+              <label class="micro-label" for="share-text">Copy this text</label>
+              <textarea id="share-text" rows="3" readonly data-share-text></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================ THEN vs TODAY ================================ -->
+    <section class="section compare" id="compare" aria-labelledby="compare-title">
+      <div class="container">
+        <h2 class="compare__title" id="compare-title">
+          <span data-amount-text>₹500</span> never changed.
+          <span class="compare__kicker">But what it could buy did.</span>
+        </h2>
+
+        <fieldset class="segmented" data-compare-switch>
+          <legend class="micro-label">Compare using</legend>
+          <!-- Options generated from data.js (DATA.compare) -->
+        </fieldset>
+
+        <div class="compare__grid">
+          <article class="compare-col compare-col--then" aria-labelledby="then-title">
+            <h3 class="compare-col__label" id="then-title">
+              <span data-amount-text>₹500</span> then · <span data-year-text>1995</span>
+            </h3>
+            <p class="compare-col__count" data-compare-then-count></p>
+            <div class="icon-grid" data-compare-then-grid aria-hidden="true"></div>
+          </article>
+
+          <div class="compare__vs" aria-hidden="true">vs</div>
+
+          <article class="compare-col compare-col--now" aria-labelledby="now-title">
+            <h3 class="compare-col__label" id="now-title">
+              <span data-amount-text>₹500</span> today · <span data-latest-year>2026</span>
+            </h3>
+            <p class="compare-col__count" data-compare-now-count></p>
+            <div class="icon-grid" data-compare-now-grid aria-hidden="true"></div>
+          </article>
+        </div>
+
+        <p class="compare__scale" data-compare-scale></p>
+        <p class="compare__summary" data-compare-summary></p>
+      </div>
+    </section>
+
+    <!-- ================================ JOURNEY ================================ -->
+    <section class="section journey" id="journey" aria-labelledby="journey-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Year by year</p>
+            <h2 id="journey-title">Travel through time</h2>
+            <p class="section-head__lead">Every stop shows what <span data-amount-text>₹500</span> bought that year. Select a ticket to jump there, or play the whole journey.</p>
+          </div>
+          <button type="button" class="btn btn--secondary" data-journey-play>
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-play"/></svg>
+            <span data-journey-play-label>Play the journey</span>
+          </button>
+        </div>
+      </div>
+      <div class="journey__scroller" data-journey-scroller>
+        <ol class="journey__track" data-journey-track></ol>
+      </div>
+    </section>
+
+    <!-- ================================ EXTRAS ================================ -->
+    <section class="section extras" id="extras" aria-labelledby="extras-title">
+      <div class="container">
+        <p class="eyebrow">The shopping list</p>
+        <h2 id="extras-title">What else could <span data-amount-text>₹500</span> buy in <span data-year-text>1995</span>?</h2>
+        <ul class="extras__grid" data-extras></ul>
+      </div>
+    </section>
+
+    <!-- ================================ WHY ================================ -->
+    <section class="section why" id="why" aria-labelledby="why-title">
+      <div class="container why__inner">
+        <div class="why__text">
+          <p class="eyebrow">Inflation, simply</p>
+          <h2 id="why-title">Why does ₹500 feel smaller?</h2>
+          <ol class="why__steps">
+            <li><strong>Prices generally rise over time.</strong> That slow, steady rise is called inflation.</li>
+            <li><strong>Your note stays exactly the same.</strong> A ₹500 note is still worth ₹500. Nothing about the paper changes.</li>
+            <li><strong>So the same note buys fewer things.</strong> Each rupee buys a little less than it used to. That’s “purchasing power” going down.</li>
+          </ol>
+          <p class="why__twist" data-why-twist></p>
+        </div>
+
+        <figure class="why__demo" aria-labelledby="why-demo-caption">
+          <div class="why__rows" data-why-rows aria-hidden="true"></div>
+          <figcaption id="why-demo-caption" class="why__caption" data-why-caption></figcaption>
+          <button type="button" class="btn btn--text" data-why-replay>
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-replay"/></svg>
+            Replay animation
+          </button>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ================================ CHART ================================ -->
+    <section class="section chart-section" id="chart" aria-labelledby="chart-title">
+      <div class="container">
+        <p class="eyebrow">In today’s money</p>
+        <h2 id="chart-title">Watch your <span data-amount-text>₹500</span> travel through time</h2>
+        <p class="section-head__lead" id="chart-desc">
+          Each point shows what <span data-amount-text>₹500</span> from that year is roughly worth in
+          <span data-latest-year>2026</span> rupees. Hover, tap or use the arrow keys on the points to explore.
+        </p>
+
+        <figure class="chart" aria-describedby="chart-desc">
+          <div class="chart__canvas" data-chart>
+            <!-- SVG and point buttons are drawn by js/components/chart.js -->
+          </div>
+          <div class="chart__tooltip" data-chart-tooltip hidden></div>
+          <figcaption class="chart__caption">
+            Values use a sample consumer-price index. Treat them as rough illustrations.
+          </figcaption>
+        </figure>
+
+        <details class="chart__table">
+          <summary>Show chart data as a table</summary>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Chart data">
+            <table>
+              <caption class="visually-hidden">Value of the chosen amount in today’s money, by year</caption>
+              <thead>
+                <tr><th scope="col">Year</th><th scope="col">Amount then</th><th scope="col">≈ Worth in <span data-latest-year>2026</span> rupees</th></tr>
+              </thead>
+              <tbody data-chart-table></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================================ DATA ================================ -->
+    <section class="section data" id="data" aria-labelledby="data-title">
+      <div class="container">
+        <p class="eyebrow">Data transparency</p>
+        <h2 id="data-title">Where do these numbers come from?</h2>
+
+        <div class="notice" data-data-notice>
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#i-info"/></svg>
+          <div>
+            <p><strong>This is sample data.</strong> The prices below are rounded, approximate figures chosen to demonstrate the idea. They have <strong>not</strong> been verified against official records and should not be quoted as historical fact.</p>
+          </div>
+        </div>
+
+        <div class="data__grid">
+          <div class="data__factors">
+            <h3>Why any historical price is only approximate</h3>
+            <ul class="factor-list">
+              <li><strong>City:</strong> a dosa in Chennai and one in Delhi never cost the same.</li>
+              <li><strong>Month and year:</strong> fuel and gold prices change many times a year.</li>
+              <li><strong>Product quality:</strong> a roadside dosa and a restaurant dosa are different products.</li>
+              <li><strong>Market price vs. official price:</strong> subsidies, taxes and discounts all move the number.</li>
+              <li><strong>Data source:</strong> different surveys and indices measure prices in different ways.</li>
+            </ul>
+          </div>
+          <div class="data__sources">
+            <h3>Sources</h3>
+            <div data-sources></div>
+            <h3>Replacing the data</h3>
+            <p>All prices live in <code>js/data.js</code>. Change a number there and the whole site updates. The README explains how to add years and sources.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap table-wrap--data" tabindex="0" role="region" aria-labelledby="dataset-caption">
+          <table class="data-table">
+            <caption id="dataset-caption">Approximate prices by year (₹) · sample data</caption>
+            <thead data-dataset-head></thead>
+            <tbody data-dataset-body></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================================ FOOTER ================================ -->
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__brand"><span aria-hidden="true">₹</span> Rupee Time Machine</p>
+      <p>An educational project built with HTML, CSS and vanilla JavaScript. Not financial advice. Prices are illustrative sample data.</p>
+      <p><a href="#top">Back to the time machine</a></p>
+    </div>
+  </footer>
+
+  <noscript>
+    <p class="noscript">The Rupee Time Machine needs JavaScript to calculate results. Please enable it to explore.</p>
+  </noscript>
+</body>
+</html>
